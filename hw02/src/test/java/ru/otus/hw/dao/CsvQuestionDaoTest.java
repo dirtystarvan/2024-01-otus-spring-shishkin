@@ -8,13 +8,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.otus.hw.config.TestFileNameProvider;
 import ru.otus.hw.utils.ClassPathResourceUtility;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CsvQuestionDaoTest {
-    private static final String TEST_FILE_NAME = "questions.csv";
+    private static final String TEST_FILE_NAME = "questions_test.csv";
 
     private static CsvQuestionDao questionDao;
 
@@ -35,5 +34,25 @@ class CsvQuestionDaoTest {
         questions.forEach(question ->
                 assertFalse(question.answers().isEmpty())
         );
+
+        assertEquals(2, questions.size());
+
+        var question = questions.get(0);
+        var answers = question.answers();
+        assertEquals(1, question.getCorrectAnswerIdx());
+        assertEquals(3, answers.size());
+        assertEquals("Is there life on Mars?", question.text());
+        assertEquals("Science doesn't know this yet", answers.get(0).text());
+        assertEquals("Certainly. The red UFO is from Mars. And green is from Venus", answers.get(1).text());
+        assertEquals("Absolutely not", answers.get(2).text());
+
+        question = questions.get(1);
+        answers = question.answers();
+        assertEquals(1, question.getCorrectAnswerIdx());
+        assertEquals(3, answers.size());
+        assertEquals("How should resources be loaded form jar in Java?", question.text());
+        assertEquals("ClassLoader#getResourceAsStream or ClassPathResource#getInputStream", answers.get(0).text());
+        assertEquals("ClassLoader#getResource#getFile + FileReader", answers.get(1).text());
+        assertEquals("Wingardium Leviosa", answers.get(2).text());
     }
 }
