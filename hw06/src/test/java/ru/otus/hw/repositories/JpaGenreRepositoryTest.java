@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.hw.models.Genre;
 
-import java.util.Set;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -33,15 +33,15 @@ class JpaGenreRepositoryTest {
 
     @Test
     void findBiIdsTest() {
-        var testIds = Set.of(2L, 3L, 4L);
-        var actualGenres = genreRepository.findAllByIds(Set.of(2L, 3L, 4L));
-        var expectedGenresQuery = entityManager.getEntityManager()
-                .createQuery("select g from Genre g where g.id in :ids", Genre.class);
-        expectedGenresQuery.setParameter("ids", testIds);
+        var dbGenres = Map.of(
+                2L, new Genre(2L, "Genre_2"),
+                3L, new Genre(3L, "Genre_3"),
+                4L, new Genre(4L, "Genre_4")
+        );
 
-        var expectedGenres = expectedGenresQuery.getResultList();
+        var actualGenres = genreRepository.findAllByIds(dbGenres.keySet());
 
-        assertThat(actualGenres).containsExactlyElementsOf(expectedGenres);
+        assertThat(actualGenres).containsExactlyInAnyOrderElementsOf(dbGenres.values());
         actualGenres.forEach(System.out::println);
     }
 }
