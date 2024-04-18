@@ -12,6 +12,7 @@ import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Genre;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,6 +34,15 @@ class JpaBookRepositoryTest {
         var expectedBook = testEntityManager.find(Book.class, id);
 
         assertThat(expectedBook).isEqualTo(actualBook);
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {3, 5})
+    void testExistsById(Long id) {
+        var isExists = bookRepository.existsById(id);
+        var expectedBook = Optional.ofNullable(testEntityManager.find(Book.class, id));
+
+        assertThat(expectedBook.isPresent()).isEqualTo(isExists);
     }
 
     @Test

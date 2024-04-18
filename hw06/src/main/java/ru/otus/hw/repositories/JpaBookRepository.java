@@ -28,6 +28,14 @@ public class JpaBookRepository implements BookRepository {
     }
 
     @Override
+    public Boolean existsById(long id) {
+        var query = em.createQuery("select exists(select 1 from Book b where b.id = :id)", Boolean.class);
+        query.setParameter("id", id);
+
+        return query.getSingleResult();
+    }
+
+    @Override
     public List<Book> findAll() {
         var query = em.createQuery("select b from Book b", Book.class);
         var graph = em.getEntityGraph("book-author");

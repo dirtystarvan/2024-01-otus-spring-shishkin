@@ -4,12 +4,15 @@ package ru.otus.hw.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.otus.hw.models.Book;
 import ru.otus.hw.models.Comment;
 import ru.otus.hw.repositories.BookRepository;
 import ru.otus.hw.repositories.CommentRepository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static java.lang.Boolean.TRUE;
 
 @Service
 @RequiredArgsConstructor
@@ -50,14 +53,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private Comment save(long id, String title, long bookId) {
-        var book = bookRepository.findById(bookId);
+        var isBookExists = bookRepository.existsById(bookId);
 
-        if (book.isEmpty()) {
+        if (!TRUE.equals(isBookExists)) {
             throw new IllegalArgumentException("Cannot save comment for book with id %d. Book not found"
                     .formatted(bookId));
         }
 
-        return commentRepository.save(new Comment(id, title, book.get()));
+        return commentRepository.save(new Comment(id, title, new Book(bookId)));
     }
 
 }
