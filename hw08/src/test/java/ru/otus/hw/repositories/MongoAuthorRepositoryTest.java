@@ -1,7 +1,7 @@
 package ru.otus.hw.repositories;
 
+import com.github.cloudyrock.spring.v5.EnableMongock;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -9,7 +9,10 @@ import ru.otus.hw.models.Author;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class MongoAuthorRepositoryTest extends AbstractRepositoryTest {
+@EnableMongock
+@DataMongoTest
+class MongoAuthorRepositoryTest {
+
     @Autowired
     private AuthorRepository authorRepository;
 
@@ -18,11 +21,11 @@ class MongoAuthorRepositoryTest extends AbstractRepositoryTest {
 
     @Test
     void testFindAll() {
-        var actualAuthors = authorRepository.findAll();
         var expectedAuthors = mongoTemplate.findAll(Author.class);
+        var actualAuthors = authorRepository.findAll();
 
+        assertThat(actualAuthors).isNotEmpty();
         assertThat(actualAuthors).containsExactlyElementsOf(expectedAuthors);
-        actualAuthors.forEach(System.out::println);
     }
 
     @Test
@@ -31,7 +34,9 @@ class MongoAuthorRepositoryTest extends AbstractRepositoryTest {
 
         for (var author : expectedAuthors) {
             var actualAuthor = authorRepository.findById(author.getId());
-            assertThat(actualAuthor).isEqualTo(author);
+            assertThat(actualAuthor).isPresent();
+            assertThat(actualAuthor.get()).isEqualTo(author);
         }
     }
+
 }

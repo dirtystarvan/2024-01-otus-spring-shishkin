@@ -18,7 +18,9 @@ import java.util.List;
 public class LibraryMongoChangelog {
 
     private List<Author> allAuthors;
+
     private List<Genre> allGenres;
+
     private List<Book> allBooks;
 
     @ChangeSet(order = "001", id = "dropDb", author = "ishishkin", runAlways = true)
