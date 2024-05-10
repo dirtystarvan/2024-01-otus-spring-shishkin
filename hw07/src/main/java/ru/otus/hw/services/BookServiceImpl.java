@@ -41,6 +41,7 @@ public class BookServiceImpl implements BookService {
     }
 
 
+    @Transactional
     @Override
     public BookDto insert(String title, long authorId, Set<Long> genresIds) {
         var savedBook = save(0, title, authorId, genresIds);
